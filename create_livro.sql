@@ -12,7 +12,7 @@ CREATE TABLE LivroInfo (
     Titulo VARCHAR2(100),
     Editora VARCHAR2(50),
     AnoPublicacao INTEGER,
-    CONSTRAINT livro_pk PRIMARY KEY (ISBN)
+    CONSTRAINT livroinfo_pk PRIMARY KEY (ISBN)
 );
 
 -- unidades de um livro
