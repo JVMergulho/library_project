@@ -1,12 +1,12 @@
 -- CRIAÇÃO DE TABELAS PARA CADASTRO DE LIVROS
 
+-- sequência para gerar identificadores únicos
 CREATE SEQUENCE seq_id_livro
     START WITH 1
     INCREMENT BY 1;
 
 -- metadados de um livro
 -- ISBN é um identificador único para cada edição e variação de um livro publicado comercialmente
-
 CREATE TABLE LivroInfo (
     ISBN VARCHAR2(13),
     Titulo VARCHAR2(100),
@@ -38,4 +38,12 @@ CREATE TABLE LivroAutor (
     CONSTRAINT livroautor_pk PRIMARY KEY (ISBN, AutorID),
     CONSTRAINT livroautor_fk_livro FOREIGN KEY (ISBN) REFERENCES LivroInfo(ISBN) ON DELETE CASCADE,
     CONSTRAINT livroautor_fk_autor FOREIGN KEY (AutorID) REFERENCES Autor(ID) ON DELETE CASCADE
+);
+
+-- Tabela de relacionamento Livro <-> Genero (N:N)
+CREATE TABLE LivroGenero (
+    ISBN VARCHAR2(13),
+    Genero VARCHAR2(50),
+    CONSTRAINT livrogenero_pk PRIMARY KEY (ISBN, Genero),
+    CONSTRAINT livrogenero_fk_livro FOREIGN KEY (ISBN) REFERENCES LivroInfo(ISBN) ON DELETE CASCADE
 );

@@ -1,12 +1,19 @@
 
 -- CRIAÇÃO DE TABELAS PARA CADASTRO DE PESSOAS
--- CRIAÇÃO DE TABELAS PARA CADASTRO DE PESSOAS
+
+-- sequências para gerar identificadores únicos
+CREATE SEQUENCE seq_cadastro_funcionario
+    START WITH 1000
+    INCREMENT BY 1;
+
+CREATE SEQUENCE seq_id_secao
+    START WITH 1
+    INCREMENT BY 1;
 
 -- levando em consideração que CEP pode ter hífen
 -- e que o número de telefone pode ter parênteses e traço
 -- e que o CPF pode ter pontos e traço
 -- e que o número do endereço pode ter letras ou ser SN (sem número)
-
 CREATE TABLE Pessoa (
     CPF VARCHAR2(14),
     Nome VARCHAR2(50),
@@ -38,7 +45,6 @@ CREATE TABLE Telefone (
 -- P -> Pesquisador (tem acesso a todo conteúdo)
 
 -- ON DELETE CASCADE: Se uma Pessoa for excluída, seu registro em Leitor também será automaticamente removido.
-
 CREATE TABLE Leitor (
     CPF VARCHAR2(14),
     TipodeLeitor CHAR(20),
@@ -50,19 +56,11 @@ CREATE TABLE Leitor (
 );
 
 -- seção onde os funcionários trabalham
-CREATE SEQUENCE seq_id_secao
-    START WITH 1
-    INCREMENT BY 1;
-
 CREATE TABLE Secao (
     ID INTEGER DEFAULT seq_id_secao.NEXTVAL,
     Nome VARCHAR2(50),
     CONSTRAINT secao_pk PRIMARY KEY (ID)
 );
-
-CREATE SEQUENCE seq_cadastro_funcionario
-    START WITH 1000
-    INCREMENT BY 1;
 
 CREATE TABLE Funcionario (
     CPF VARCHAR2(14),
