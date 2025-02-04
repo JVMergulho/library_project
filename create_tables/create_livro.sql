@@ -1,3 +1,9 @@
+DROP TABLE LivroGenero CASCADE CONSTRAINTS;
+DROP TABLE LivroAutor CASCADE CONSTRAINTS;
+DROP TABLE Autor CASCADE CONSTRAINTS;
+DROP TABLE Livro CASCADE CONSTRAINTS;
+DROP TABLE LivroInfo CASCADE CONSTRAINTS;
+
 -- CRIAÇÃO DE TABELAS PARA CADASTRO DE LIVROS
 
 -- sequência para gerar identificadores únicos
@@ -17,11 +23,13 @@ CREATE TABLE LivroInfo (
 
 -- unidades de um livro
 CREATE TABLE Livro (
-    ID INTEGER DEFAULT seq_id_livro.NEXTVAL, -- código de tombamento
+    COdigoTombamento INTEGER DEFAULT seq_id_livro.NEXTVAL, -- código de tombamento
     ISBN VARCHAR2(13),
     Preco DECIMAL(10, 2),
+    CPFFuncionario VARCHAR2(14),
     CONSTRAINT livro_pk PRIMARY KEY (ID),
-    CONSTRAINT livro_fk_info FOREIGN KEY (ISBN) REFERENCES LivroInfo(ISBN)
+    CONSTRAINT livro_fk_info FOREIGN KEY (ISBN) REFERENCES LivroInfo(ISBN),
+    CONSTRAINT livro_fk_funcionario FOREIGN KEY (CPFFuncionario) REFERENCES Funcionario(CPF)
 );
 
 -- Tabela de autores (apenas para armazenar autores)
