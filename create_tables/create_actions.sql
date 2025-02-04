@@ -43,6 +43,11 @@ CREATE TABLE Reserva (
     CONSTRAINT check_estado_reserva CHECK (Estado IN ('R', 'F', 'C'))
 );
 
+-- Multa por atraso na devolução de livro
+-- Status:
+-- A -> Aberto
+-- P -> Pago
+
 CREATE TABLE Multa (
     Leitor VARCHAR2(14),
     Funcionario VARCHAR2(14),
@@ -52,7 +57,7 @@ CREATE TABLE Multa (
     Status CHAR(1) CHECK (Status IN ('A', 'P')),
     TaxaDiaria NUMBER(10,2),
     ValorMaximo NUMBER(10,2),
-    CONSTRAINT multa_pk PRIMARY KEY (CPFLeitor, Livro, Funcionario, DataMulta, DataEmprestimo),
+    CONSTRAINT multa_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataMulta, DataEmprestimo),
     CONSTRAINT multa_fk_leitor FOREIGN KEY (Leitor, Livro, Funcionario, DataEmprestimo) 
-        REFERENCES Emprestimo(Leitor, Livro, CFuncionario, DataEmprestimo)
+        REFERENCES Emprestimo(Leitor, Livro, Funcionario, DataEmprestimo)
 );
