@@ -18,6 +18,7 @@ CREATE TABLE LivroInfo (
     Titulo VARCHAR2(100),
     Editora VARCHAR2(50),
     AnoPublicacao INTEGER,
+    TipoUsuario CHAR(1) CHECK (TipoUsuario IN ('I', 'A', 'P')),
     CONSTRAINT livroinfo_pk PRIMARY KEY (ISBN)
 );
 
