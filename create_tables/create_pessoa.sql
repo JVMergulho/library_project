@@ -72,7 +72,7 @@ CREATE TABLE Funcionario (
     CPF VARCHAR2(14),
     Cargo VARCHAR2(50),
     Supervisor VARCHAR2(14),
-    Cadastro INTEGER DEFAULT seq_cadastro_funcionario.NEXTVAL,
+    CodigoFuncionario INTEGER DEFAULT seq_cadastro_funcionario.NEXTVAL,
     Email VARCHAR(320),
     Senha VARCHAR2(30),
     secao INTEGER,

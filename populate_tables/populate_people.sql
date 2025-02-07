@@ -1,15 +1,18 @@
--- Inserindo dados na tabela Pessoa
-INSERT ALL
-    INTO Pessoa (CPF, Nome, DataNascimento, CEP, NumeroEndereco) VALUES ('12345678901', 'Ryei Moraes', TO_DATE('01/01/1990', 'DD/MM/YYYY'), '12345678', '0')
-    INTO Pessoa (CPF, Nome, DataNascimento, CEP, NumeroEndereco) VALUES ('98765432100', 'Leticia Pedrosa', TO_DATE('01/02/1995', 'DD/MM/YYYY'), '12358232', '152')
-    INTO Pessoa (CPF, Nome, DataNascimento, CEP, NumeroEndereco) VALUES ('56789012345', 'João Omena', TO_DATE('01/03/2000', 'DD/MM/YYYY'), '84561259', '516')
-SELECT * FROM dual;
-
 -- Inserindo dados na tabela Logradouro
 INSERT ALL
     INTO Logradouro (CEP, Rua) VALUES ('12345678', 'Rua dos Bobos')
     INTO Logradouro (CEP, Rua) VALUES ('12358232', 'Rua dos Pobres')
     INTO Logradouro (CEP, Rua) VALUES ('84561259', 'Rua dos Ricos')
+SELECT * FROM dual;
+
+-- Inserindo dados na tabela Pessoa
+INSERT ALL
+    INTO Pessoa (CPF, Nome, DatadeNascimento, CEP, NumeroEndereco) VALUES ('12345678901', 'Ryei Moraes', TO_DATE('01/01/1990', 'DD/MM/YYYY'), '12345678', '0')
+    INTO Pessoa (CPF, Nome, DatadeNascimento, CEP, NumeroEndereco) VALUES ('98765432100', 'Leticia Pedrosa', TO_DATE('01/02/1995', 'DD/MM/YYYY'), '12358232', '152')
+    INTO Pessoa (CPF, Nome, DatadeNascimento, CEP, NumeroEndereco) VALUES ('56789012345', 'João Omena', TO_DATE('01/03/2000', 'DD/MM/YYYY'), '84561259', '516')
+    INTO Pessoa (CPF, Nome, DatadeNascimento, CEP, NumeroEndereco) VALUES ('98765432110', 'Sofia Lima', TO_DATE('01/04/2005', 'DD/MM/YYYY'), '12345678', '0')
+    INTO Pessoa (CPF, Nome, DatadeNascimento, CEP, NumeroEndereco) VALUES ('56234565444', 'Pedro Monte', TO_DATE('01/05/2010', 'DD/MM/YYYY'), '12358232', '152')
+    INTO Pessoa (CPF, Nome, DatadeNascimento, CEP, NumeroEndereco) VALUES ('15468718901', 'João Mergulhão', TO_DATE('01/06/2015', 'DD/MM/YYYY'), '84561259', '516')
 SELECT * FROM dual;
 
 -- Inserindo dados na tabela Telefone
