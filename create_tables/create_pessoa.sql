@@ -80,3 +80,5 @@ CREATE TABLE Funcionario (
     CONSTRAINT funcionario_fk_pessoa FOREIGN KEY (CPF) REFERENCES Pessoa(CPF) ON DELETE CASCADE,
     CONSTRAINT funcionario_fk_supervisor FOREIGN KEY (Supervisor) REFERENCES Funcionario (CPF),CONSTRAINT funcionario_fk_secao FOREIGN KEY (secao) REFERENCES Secao (ID)
 );
+
+COMMIT;

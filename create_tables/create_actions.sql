@@ -20,7 +20,7 @@ CREATE TABLE Emprestimo (
     CONSTRAINT emprestimo_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataEmprestimo),
     CONSTRAINT emprestimo_fk_leitor FOREIGN KEY (Leitor) REFERENCES Leitor(CPF),
     CONSTRAINT emprestimo_fk_funcionario FOREIGN KEY (Funcionario) REFERENCES Funcionario(CPF),
-    CONSTRAINT emprestimo_fk_livro FOREIGN KEY (Livro) REFERENCES Livro(ID),
+    CONSTRAINT emprestimo_fk_livro FOREIGN KEY (Livro) REFERENCES Livro(CodigoTombamento),
     CONSTRAINT check_estado_emprestimo CHECK (Estado IN ('E', 'D', 'A'))
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE Reserva (
     CONSTRAINT reserva_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataReserva),
     CONSTRAINT reserva_fk_leitor FOREIGN KEY (Leitor) REFERENCES Leitor(CPF),
     CONSTRAINT reserva_fk_funcionario FOREIGN KEY (Funcionario) REFERENCES Funcionario(CPF),
-    CONSTRAINT reserva_fk_livro FOREIGN KEY (Livro) REFERENCES Livro(ID),
+    CONSTRAINT reserva_fk_livro FOREIGN KEY (Livro) REFERENCES Livro(CodigoTombamento),
     CONSTRAINT check_estado_reserva CHECK (Estado IN ('R', 'F', 'C'))
 );
 
@@ -61,3 +61,5 @@ CREATE TABLE Multa (
     CONSTRAINT multa_fk_leitor FOREIGN KEY (Leitor, Livro, Funcionario, DataEmprestimo) 
         REFERENCES Emprestimo(Leitor, Livro, Funcionario, DataEmprestimo)
 );
+
+COMMIT;

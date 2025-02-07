@@ -74,3 +74,5 @@ CREATE TABLE LivroGenero (
     CONSTRAINT livrogenero_pk PRIMARY KEY (ISBN, Genero),
     CONSTRAINT livrogenero_fk_livro FOREIGN KEY (ISBN) REFERENCES LivroInfo(ISBN) ON DELETE CASCADE
 );
+
+COMMIT;

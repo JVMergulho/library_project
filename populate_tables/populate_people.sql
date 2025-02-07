@@ -41,3 +41,5 @@ INSERT ALL
     INTO Funcionario (CPF, Cargo, Supervisor, Email, Senha, secao) VALUES ('98765432100', 'Chefe da Seção', '98765432100', 'leticia.pedrosa@gmail.com', '654321', 2)
     INTO Funcionario (CPF, Cargo, Supervisor, Email, Senha, secao) VALUES ('56789012345', 'Chefe da Seção', '56789012345', 'joao.omena@gmail.com', '987654', 1)
 SELECT * FROM dual;
+
+COMMIT;
