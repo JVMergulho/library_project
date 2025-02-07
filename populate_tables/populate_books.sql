@@ -10,15 +10,20 @@ INSERT ALL
 SELECT * FROM dual;
 
 -- Inserindo dados na tabela Autor
-INSERT ALL
-    INTO Autor (Nome) VALUES ('Machado de Assis')
-    INTO Autor (Nome) VALUES ('George Orwell')
-    INTO Autor (Nome) VALUES ('Antoine de Saint-Exupéry')
-    INTO Autor (Nome) VALUES ('Aldous Huxley')
-    INTO Autor (Nome) VALUES ('Chico Buarque')
-    INTO Autor (Nome) VALUES ('Ziraldo')
-    INTO Autor (Nome) VALUES ('Dante Alighieri')
-SELECT * FROM dual;
+INSERT INTO Autor (ID, Nome) VALUES (seq_id_autor.NEXTVAL, 'Machado de Assis');
+
+INSERT INTO Autor (ID, Nome) VALUES (seq_id_autor.NEXTVAL, 'George Orwell');
+
+INSERT INTO Autor (ID, Nome) VALUES (seq_id_autor.NEXTVAL, 'Antoine de Saint-Exupéry');
+
+INSERT INTO Autor (ID, Nome) VALUES (seq_id_autor.NEXTVAL, 'Aldous Huxley');
+
+INSERT INTO Autor (ID, Nome) VALUES (seq_id_autor.NEXTVAL, 'Chico Buarque');
+
+INSERT INTO Autor (ID, Nome) VALUES (seq_id_autor.NEXTVAL, 'Ziraldo');
+
+INSERT INTO Autor (ID, Nome) VALUES (seq_id_autor.NEXTVAL, 'Dante Alighieri');
+
 
 -- Inserindo dados na tabela LivroAutor
 INSERT ALL
@@ -50,15 +55,20 @@ INSERT ALL
 SELECT * FROM dual;
 
 -- Inserindo dados na tabela Livro
-INSERT ALL
-    INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788535902774', 39.90, '12345678901')
-    INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9786555320022', 49.90, '12345678901')
-    INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788544002278', 59.90, '98765432100')
-    INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788520937011', 29.90, '56789012345')
-    INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788594318601', 45.00, '56789012345')
-    INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788551301821', 19.90, '56789012345')
-    INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788572326203', 25.00, '12345678901')
-SELECT * FROM dual;
+INSERT INTO Livro (CodigoTombamento, ISBN, Preco, CPFFuncionario) VALUES (seq_id_livro.NEXTVAL, '9788535902774', 39.90, '12345678901');
+
+INSERT INTO Livro (CodigoTombamento, ISBN, Preco, CPFFuncionario) VALUES (seq_id_livro.NEXTVAL, '9786555320022', 49.90, '12345678901');
+
+INSERT INTO Livro (CodigoTombamento, ISBN, Preco, CPFFuncionario) VALUES (seq_id_livro.NEXTVAL, '9788544002278', 59.90, '98765432100');
+
+INSERT INTO Livro (CodigoTombamento, ISBN, Preco, CPFFuncionario) VALUES (seq_id_livro.NEXTVAL, '9788520937011', 29.90, '56789012345');
+
+INSERT INTO Livro (CodigoTombamento, ISBN, Preco, CPFFuncionario) VALUES (seq_id_livro.NEXTVAL, '9788594318601', 45.00, '56789012345');
+
+INSERT INTO Livro (CodigoTombamento, ISBN, Preco, CPFFuncionario) VALUES (seq_id_livro.NEXTVAL, '9788551301821', 19.90, '56789012345');
+
+INSERT INTO Livro (CodigoTombamento, ISBN, Preco, CPFFuncionario) VALUES (seq_id_livro.NEXTVAL, '9788572326203', 25.00, '12345678901');
+
 
 INSERT ALL
     INTO Permissao (TipoUsuario, RestricaoUsuario) VALUES ('I', 'L')

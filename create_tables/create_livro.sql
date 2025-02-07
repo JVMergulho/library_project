@@ -5,6 +5,9 @@ DROP TABLE Livro CASCADE CONSTRAINTS;
 DROP TABLE LivroInfo CASCADE CONSTRAINTS;
 DROP TABLE Permissao CASCADE CONSTRAINTS;
 
+DROP SEQUENCE seq_id_livro;
+DROP SEQUENCE seq_id_autor;
+
 -- CRIAÇÃO DE TABELAS PARA CADASTRO DE LIVROS
 
 -- sequência para gerar identificadores únicos
@@ -42,7 +45,7 @@ CREATE TABLE Permissao (
 
 -- unidades de um livro
 CREATE TABLE Livro (
-    CodigoTombamento INTEGER DEFAULT seq_id_livro.NEXTVAL, -- código de tombamento
+    CodigoTombamento INTEGER,
     ISBN VARCHAR2(13),
     Preco DECIMAL(10, 2),
     CPFFuncionario VARCHAR2(14),

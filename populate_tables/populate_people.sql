@@ -30,16 +30,17 @@ INSERT ALL
 SELECT * FROM dual;
 
 -- Inserindo dados na tabela Secao
-INSERT ALL
-    INTO Secao (Nome) VALUES ('Infantil')
-    INTO Secao (Nome) VALUES ('Literatura Clássica')
-SELECT * FROM dual;
+INSERT INTO Secao (ID, Nome) VALUES (seq_id_secao.NEXTVAL, 'Infantil');
+INSERT INTO Secao (ID, Nome) VALUES (seq_id_secao.NEXTVAL, 'Literatura Clássica');
 
 -- Inserindo dados na tabela Funcionario
-INSERT ALL 
-    INTO Funcionario (CPF, Cargo, Supervisor, Email, Senha, secao) VALUES ('12345678901', 'Bibliotecário', '56789012345', 'ryei.moraes@gmail.com', '123456', 1)
-    INTO Funcionario (CPF, Cargo, Supervisor, Email, Senha, secao) VALUES ('98765432100', 'Chefe da Seção', '98765432100', 'leticia.pedrosa@gmail.com', '654321', 2)
-    INTO Funcionario (CPF, Cargo, Supervisor, Email, Senha, secao) VALUES ('56789012345', 'Chefe da Seção', '56789012345', 'joao.omena@gmail.com', '987654', 1)
-SELECT * FROM dual;
+INSERT INTO Funcionario (CodigoFuncionario, CPF, Cargo, Supervisor, Email, Senha, secao) 
+VALUES (seq_cadastro_funcionario.NEXTVAL, '98765432100', 'Chefe da Seção', NULL, 'leticia.pedrosa@gmail.com', '654321', 2);
+
+INSERT INTO Funcionario (CodigoFuncionario, CPF, Cargo, Supervisor, Email, Senha, secao) 
+VALUES (seq_cadastro_funcionario.NEXTVAL, '56789012345', 'Chefe da Seção', NULL, 'joao.omena@gmail.com', '987654', 1);
+
+INSERT INTO Funcionario (CodigoFuncionario, CPF, Cargo, Supervisor, Email, Senha, secao) 
+VALUES (seq_cadastro_funcionario.NEXTVAL, '12345678901', 'Bibliotecário', '56789012345', 'ryei.moraes@gmail.com', '123456', 1);
 
 COMMIT;
