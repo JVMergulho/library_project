@@ -5,6 +5,9 @@ DROP TABLE Secao CASCADE CONSTRAINTS;
 DROP TABLE Pessoa CASCADE CONSTRAINTS;
 DROP TABLE Logradouro CASCADE CONSTRAINTS;
 
+DROP SEQUENCE seq_id_secao;
+DROP SEQUENCE seq_cadastro_funcionario;
+
 -- CRIAÇÃO DE TABELAS PARA CADASTRO DE PESSOAS
 
 -- sequências para gerar identificadores únicos
@@ -20,6 +23,12 @@ CREATE SEQUENCE seq_id_secao
 -- e que o número de telefone pode ter parênteses e traço
 -- e que o CPF pode ter pontos e traço
 -- e que o número do endereço pode ter letras ou ser SN (sem número)
+CREATE TABLE Logradouro (
+    CEP VARCHAR2(8),
+    Rua VARCHAR2(50),
+    CONSTRAINT logradouro_pk PRIMARY KEY ( CEP )
+);
+
 CREATE TABLE Pessoa (
     CPF VARCHAR2(14),
     Nome VARCHAR2(50),
@@ -28,12 +37,6 @@ CREATE TABLE Pessoa (
     NumeroEndereco VARCHAR2(10),
     CONSTRAINT pessoa_pk PRIMARY KEY ( CPF ),
     CONSTRAINT pessoa_fk_logradouro FOREIGN KEY ( CEP ) REFERENCES Logradouro(CEP)
-);
-
-CREATE TABLE Logradouro (
-    CEP VARCHAR2(8),
-    Rua VARCHAR2(50),
-    CONSTRAINT logradouro_pk PRIMARY KEY ( CEP )
 );
 
 CREATE TABLE Telefone (
@@ -63,7 +66,7 @@ CREATE TABLE Leitor (
 
 -- seção onde os funcionários trabalham
 CREATE TABLE Secao (
-    ID INTEGER DEFAULT seq_id_secao.NEXTVAL,
+    ID INTEGER,
     Nome VARCHAR2(50),
     CONSTRAINT secao_pk PRIMARY KEY (ID)
 );
@@ -72,7 +75,7 @@ CREATE TABLE Funcionario (
     CPF VARCHAR2(14),
     Cargo VARCHAR2(50),
     Supervisor VARCHAR2(14),
-    CodigoFuncionario INTEGER DEFAULT seq_cadastro_funcionario.NEXTVAL,
+    CodigoFuncionario INTEGER,
     Email VARCHAR(320),
     Senha VARCHAR2(30),
     secao INTEGER,
