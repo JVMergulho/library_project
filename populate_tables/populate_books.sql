@@ -59,3 +59,14 @@ INSERT ALL
     INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788551301821', 19.90, '56789012345')
     INTO Livro (ISBN, Preco, CPFFuncionario) VALUES ('9788572326203', 25.00, '12345678901')
 SELECT * FROM dual;
+
+INSERT ALL
+    INTO Permissao (TipoUsuario, RestricaoUsuario) VALUES ('I', 'L')
+    INTO Permissao (TipoUsuario, RestricaoUsuario) VALUES ('A', 'L')
+    INTO Permissao (TipoUsuario, RestricaoUsuario) VALUES ('A', 'A')
+    INTO Permissao (TipoUsuario, RestricaoUsuario) VALUES ('P', 'L')
+    INTO Permissao (TipoUsuario, RestricaoUsuario) VALUES ('P', 'A')
+    INTO Permissao (TipoUsuario, RestricaoUsuario) VALUES ('P', 'R')
+SELECT * FROM dual;
+
+COMMIT;
