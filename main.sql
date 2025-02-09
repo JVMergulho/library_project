@@ -7,3 +7,8 @@ START create_tables/create_actions.sql
 START populate_tables/populate_people.sql
 START populate_tables/populate_books.sql
 START populate_tables/populate_actions.sql
+
+-- alterando tabelas 
+START consult_tables/alter_tables.sql
+
+COMMIT;
