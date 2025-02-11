@@ -78,3 +78,46 @@ BEGIN
     FROM LivroInfo L
     WHERE L.Preco IN (SELECT MAX(Preco) FROM LivroInfo);
 END preco_maximo_livro;
+
+-- Trigger que atualiza o campo DataLimite para 7 dias após DataReserva para a linha recém-inserida
+CREATE OR REPLACE TRIGGER checa_datas_reserva 
+AFTER INSERT ON Reserva
+FOR EACH ROW
+BEGIN
+    IF :NEW.DataLimite IS NULL THEN
+        :NEW.DataLimite := :NEW.DataReserva + 7;
+    END IF;
+END;
+
+-- Trigger de comando que exibe uma mensagem de acordo com a operação realizada
+CREATE OR REPLACE TRIGGER log_livros
+AFTER INSERT OR DELETE OR UPDATE ON Livro
+BEGIN
+    
+    IF (DELETING) THEN
+        DBMS_OUTPUT.PUT_LINE('Livro(s) deletado(s)');
+    END IF;
+
+    IF (UPDATING) THEN
+        DBMS_OUTPUT.PUT_LINE('Livro(s) atualizado(s)');
+    END IF;
+
+    IF (INSERTING) THEN
+        DBMS_OUTPUT.PUT_LINE('Livro(s) inserido(s)');
+    END IF;
+END;
+
+ -- Trigger que verifica se a DataReserva não é uma data futura
+CREATE OR REPLACE TRIGGER checa_data_reserva
+BEFORE INSERT ON Reserva
+FOR EACH ROW
+DECLARE
+    data_errada EXCEPTION;
+BEGIN
+    IF :NEW.DataReserva > SYSDATE 
+    THEN RAISE data_errada;
+    END IF;
+EXCEPTION 
+    WHEN data_errada THEN
+        RAISE_APPLICATION_ERROR(-20000, 'Data de reserva não pode ser uma data futura');
+END checa_data_reserva;
