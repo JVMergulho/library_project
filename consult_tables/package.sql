@@ -22,64 +22,71 @@ UNION
 (SELECT L.Titulo FROM LivroInfo L 
 WHERE L.RestricaoUsuario = 'A');
 
--- Criando o pacote corretamente
-CREATE OR REPLACE PACKAGE pkg_types AS
+
+-- Criando o pacote
+CREATE OR REPLACE PACKAGE pkg_emprestimo_livro AS
     TYPE pessoa_cpf_email IS RECORD (
         CPF Pessoa.CPF%TYPE,
         Email Pessoa.Email%TYPE,
-        Nome Pessoa.Nome%TYPE  -- Adicionando um nome para a coluna
+        Nome Pessoa.Nome%TYPE
     );
 
-    TYPE Tabela_pessoa IS TABLE OF pessoa_cpf_email INDEX BY BINARY_INTEGER;
+    TYPE TabelaPessoa IS TABLE OF pessoa_cpf_email INDEX BY BINARY_INTEGER;
     TYPE Livro_metadado IS TABLE OF Livro%ROWTYPE INDEX BY BINARY_INTEGER;
-END pkg_types;
 
--- Criando a função usando esse tipo TABLE
-CREATE OR REPLACE FUNCTION listar_leitores_com_emprestimos 
-RETURN TabelaPessoa IS
-    pessoas TabelaPessoa := TabelaPessoa(); -- Inicializa a coleção
-BEGIN
-    FOR reg IN (
-        SELECT DISTINCT P.CPF, P.Nome 
-        FROM Pessoa P
-        JOIN Emprestimo E ON P.CPF = E.Leitor
-    ) LOOP
-        -- Adiciona um novo elemento na coleção
-        pessoas.EXTEND;
-        pessoas(pessoas.LAST) := PessoaRow(reg.CPF, reg.Nome);
-    END LOOP;
+    FUNCTION listar_leitores_com_emprestimos RETURN TabelaPessoa;
 
-    RETURN pessoas; -- Retorna a coleção completa
-END listar_leitores_com_emprestimos;
+    FUNCTION livros_preco_entre (preco_minimo IN NUMBER, preco_maximo IN NUMBER) 
+    RETURN Livro_metadado;
 
--- Quais livros estão com preço entre um intervalo?
-CREATE OR REPLACE FUNCTION livros_preco_entre (preco_minimo IN NUMBER, preco_maximo IN NUMBER) 
-RETURN pkg_types.Livro_metadado IS
-    livros pkg_types.Livro_metadado := pkg_types.Livro_metadado(); -- Inicializa a coleção
-BEGIN
-    FOR reg IN (
-        SELECT * FROM Livro
-        WHERE Preco BETWEEN preco_minimo AND preco_maximo
-    ) LOOP
-        -- Adiciona um novo elemento na coleção
-        livros.EXTEND;
-        livros(livros.LAST) := reg;
-    END LOOP;
+    FUNCTION preco_maximo_livro RETURN NUMBER;
 
-    RETURN livros; -- Retorna a coleção completa
-END livros_preco_entre;
+END pkg_emprestimo_livro;
 
--- Qual o livro com o maior preço?
-CREATE OR REPLACE FUNCTION preco_maximo_livro 
-RETURN NUMBER IS
-    livro_nome Livro.Nome%Type;
-BEGIN
-    SELECT L.Nome INTO livro_nome
-    FROM LivroInfo L
-    WHERE L.Preco IN (SELECT MAX(Preco) FROM LivroInfo);
-END preco_maximo_livro;
+-- Corpo do pacote
+CREATE OR REPLACE PACKAGE BODY pkg_emprestimo_livro AS
+    -- Função listar_leitores_com_emprestimos
+    FUNCTION listar_leitores_com_emprestimos RETURN TabelaPessoa IS
+        pessoas TabelaPessoa := TabelaPessoa(); -- Inicializa a coleção
+    BEGIN
+        FOR reg IN (
+            SELECT DISTINCT P.CPF, P.Nome 
+            FROM Pessoa P
+            JOIN Emprestimo E ON P.CPF = E.Leitor
+        ) LOOP
+            pessoas.EXTEND;
+            pessoas(pessoas.LAST) := pessoa_cpf_email(reg.CPF, reg.Nome);
+        END LOOP;
+        RETURN pessoas; -- Retorna a coleção
+    END listar_leitores_com_emprestimos;
 
--- Trigger que atualiza o campo DataLimite para 7 dias após DataReserva para a linha recém-inserida
+    -- Função livros_preco_entre
+    FUNCTION livros_preco_entre (preco_minimo IN NUMBER, preco_maximo IN NUMBER) 
+    RETURN Livro_metadado IS
+        livros Livro_metadado := Livro_metadado(); -- Inicializa a coleção
+    BEGIN
+        FOR reg IN (
+            SELECT * FROM Livro
+            WHERE Preco BETWEEN preco_minimo AND preco_maximo
+        ) LOOP
+            livros.EXTEND;
+            livros(livros.LAST) := reg;
+        END LOOP;
+        RETURN livros; -- Retorna a coleção
+    END livros_preco_entre;
+
+    -- Função preco_maximo_livro
+    FUNCTION preco_maximo_livro RETURN NUMBER IS
+        preco_max NUMBER;
+    BEGIN
+        SELECT MAX(Preco) INTO preco_max
+        FROM LivroInfo L;
+        RETURN preco_max;
+    END preco_maximo_livro;
+
+END pkg_emprestimo_livro;
+
+-- Triggers
 CREATE OR REPLACE TRIGGER checa_datas_reserva 
 AFTER INSERT ON Reserva
 FOR EACH ROW
@@ -89,35 +96,23 @@ BEGIN
     END IF;
 END;
 
--- Trigger de comando que exibe uma mensagem de acordo com a operação realizada
 CREATE OR REPLACE TRIGGER log_livros
 AFTER INSERT OR DELETE OR UPDATE ON Livro
 BEGIN
-    
-    IF (DELETING) THEN
-        DBMS_OUTPUT.PUT_LINE('Livro(s) deletado(s)');
-    END IF;
-
-    IF (UPDATING) THEN
-        DBMS_OUTPUT.PUT_LINE('Livro(s) atualizado(s)');
-    END IF;
-
-    IF (INSERTING) THEN
+    IF INSERTING THEN
         DBMS_OUTPUT.PUT_LINE('Livro(s) inserido(s)');
+    ELSIF UPDATING THEN
+        DBMS_OUTPUT.PUT_LINE('Livro(s) atualizado(s)');
+    ELSIF DELETING THEN
+        DBMS_OUTPUT.PUT_LINE('Livro(s) deletado(s)');
     END IF;
 END;
 
- -- Trigger que verifica se a DataReserva não é uma data futura
 CREATE OR REPLACE TRIGGER checa_data_reserva
 BEFORE INSERT ON Reserva
 FOR EACH ROW
-DECLARE
-    data_errada EXCEPTION;
 BEGIN
-    IF :NEW.DataReserva > SYSDATE 
-    THEN RAISE data_errada;
-    END IF;
-EXCEPTION 
-    WHEN data_errada THEN
+    IF :NEW.DataReserva > SYSDATE THEN
         RAISE_APPLICATION_ERROR(-20000, 'Data de reserva não pode ser uma data futura');
+    END IF;
 END checa_data_reserva;
