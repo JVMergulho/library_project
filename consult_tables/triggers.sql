@@ -23,13 +23,28 @@ BEGIN
     END IF;
 END;
 
-CREATE OR REPLACE TRIGGER checa_data_futura
+CREATE OR REPLACE TRIGGER checa_restricao_datas
 BEFORE INSERT ON Reserva
 FOR EACH ROW
+DECLARE
+    data_futura EXCEPTION;
+    data_trocada EXCEPTION;
+    data_muito_proxima EXCEPTION;
 BEGIN
     IF :NEW.DataReserva > SYSDATE THEN
-        RAISE_APPLICATION_ERROR(-20000, 'Data de reserva não pode ser uma data futura');
+        RAISE data_futura;
+    ELSIF :NEW.DataReserva < SYSDATE - 7 THEN
+        RAISE data_muito_proxima;
+    ELSIF :NEW.DataReserva > :NEW.DataLimite THEN
+        RAISE data_trocada;
     END IF;
-END checa_data_reserva;
+EXCEPTION
+    WHEN data_futura THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Data de reserva futura');
+    WHEN data_muito_proxima THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Data de reserva muito próxima');
+    WHEN data_trocada THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Datas trocadas');
+END checa_restricao_datas;
 
 COMMIT;

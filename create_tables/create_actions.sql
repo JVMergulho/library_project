@@ -59,7 +59,7 @@ CREATE TABLE Multa (
     ValorMaximo NUMBER(10,2),
     CONSTRAINT multa_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataMulta, DataEmprestimo),
     CONSTRAINT multa_fk_leitor FOREIGN KEY (Leitor, Livro, Funcionario, DataEmprestimo) 
-        REFERENCES Emprestimo(Leitor, Livro, Funcionario, DataEmprestimo)
+    REFERENCES Emprestimo(Leitor, Livro, Funcionario, DataEmprestimo)
 );
 
 COMMIT;
