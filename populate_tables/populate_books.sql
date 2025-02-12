@@ -1,12 +1,12 @@
 -- Inserindo dados na tabela LivroInfo
 INSERT ALL
-    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788535902774', 'Dom Casmurro', 'Penguin Companhia', 1899, 'A')
-    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9786555320022', 'A Revolução dos Bichos', 'Antofágica', 1945, 'L')
-    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788544002278', '1984', 'Companhia das Letras', 1949, 'A')
-    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788520937011', 'O Pequeno Príncipe', 'Agir', 1943, 'R')
-    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788594318601', 'Admirável Mundo Novo', 'Biblioteca Azul', 1932, 'L')
-    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788551301821', 'Chapeuzinho Amarelo', 'Autêntica', 1970, 'L')
-    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788572326203', 'O Inferno de Dante', 'Editora 34', 1321, 'R')
+    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788535902774', 'Dom Casmurro', 'Penguin Companhia', 1899, 'A', 2)
+    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9786555320022', 'A Revolução dos Bichos', 'Antofágica', 1945, 'L', 2)
+    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788544002278', '1984', 'Companhia das Letras', 1949, 'A', 2)
+    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788520937011', 'O Pequeno Príncipe', 'Agir', 1943, 'R', 1)
+    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788594318601', 'Admirável Mundo Novo', 'Biblioteca Azul', 1932, 'L', 2)
+    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788551301821', 'Chapeuzinho Amarelo', 'Autêntica', 1970, 'L', 1)
+    INTO LivroInfo (ISBN, Titulo, Editora, AnoPublicacao, RestricaoUsuario) VALUES ('9788572326203', 'O Inferno de Dante', 'Editora 34', 1321, 'R', 2)
 SELECT * FROM dual;
 
 -- Inserindo dados na tabela Autor

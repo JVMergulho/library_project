@@ -2,11 +2,11 @@
 SELECT COUNT(*) FROM LivroInfo GROUP BY Secao;
 
 -- quantas unidades existe em cada seção (levando em conta apenas as seções com livros cadastrados)?
-SELECT S.NomeSecao, COUNT(L.CodigoTombamento) AS Quantidade
+SELECT S.Nome, COUNT(L.CodigoTombamento) AS Quantidade
 FROM Livro L
-JOIN Secao S ON L.IDSecao = S.IDSecao
-GROUP BY S.NomeSecao
-HAVING COUNT(L.CodigoTombamento) > 0
+JOIN LivroInfo LI ON L.ISBN = LI.ISBN
+JOIN Secao S ON LI.SecaoID = S.ID
+GROUP BY S.Nome
 ORDER BY Quantidade DESC;
 
 -- Cria uma view que mostra o CPF, nome, data da multa e status de todas as multas
