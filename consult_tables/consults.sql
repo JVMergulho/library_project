@@ -49,24 +49,3 @@ BEGIN
     -- Exibir a mensagem
     DBMS_OUTPUT.PUT_LINE(mensagem);
 END quantas_multas;
-
-PROCEDURE leitor_restricao_emprestimo (
-    CPF IN VARCHAR2,
-    ISBN IN VARCHAR2
-) AS 
-    restricaoUsuario CHAR(1);
-    tipoUsuario CHAR(1);
-BEGIN
-    SELECT RestricaoUsuario INTO restricaoLivro 
-    FROM LivroInfo
-    WHERE ISBN = ISBN;
-
-    SELECT RestricaoUsuario INTO restricaoUsuario
-    FROM Permissao
-    WHERE TipoUsuario = (
-        SELECT TipoUsuario
-        FROM Leitor
-        WHERE CPF = CPF
-    );
-END leitor_restricao_emprestimo;
-
