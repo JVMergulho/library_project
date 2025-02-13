@@ -57,7 +57,7 @@ BEGIN
     END IF;
 END checa_retricao;
 
--- Bloco anônimo para testar as procedures
+-- Bloco anônimo para testar a procedure
 DECLARE
     v_ISBN LivroInfo.ISBN%TYPE;
     v_nomeLivro LivroInfo.Titulo%TYPE := 'O Pequeno Príncipe';

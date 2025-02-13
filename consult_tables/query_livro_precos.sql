@@ -24,8 +24,3 @@ WHERE Preco BETWEEN 50 AND 100;
 SELECT RestricaoUsuario, AVG(Preco) FROM LivroInfo
 JOIN Livro ON LivroInfo.ISBN = Livro.ISBN
 GROUP BY RestricaoUsuario;
-
-
-
-
-
