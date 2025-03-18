@@ -33,8 +33,10 @@ CREATE TABLE LivroInfo (
     Titulo VARCHAR2(100),
     Editora VARCHAR2(50),
     AnoPublicacao INTEGER,
+    SecaoID INTEGER,
     RestricaoUsuario CHAR(1) CHECK (RestricaoUsuario IN ('L', 'A', 'R')),
-    CONSTRAINT livroinfo_pk PRIMARY KEY (ISBN)
+    CONSTRAINT livroinfo_pk PRIMARY KEY (ISBN),
+    CONSTRAINT livroinfo_fk_secao FOREIGN KEY (SecaoID) REFERENCES Secao(ID)
 );
 
 CREATE TABLE Permissao (
