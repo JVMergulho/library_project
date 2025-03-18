@@ -1,3 +1,11 @@
+BEGIN
+    FOR t IN (SELECT type_name FROM user_types) LOOP
+        EXECUTE IMMEDIATE 'DROP TYPE BODY "' || t.type_name || '"';
+        EXECUTE IMMEDIATE 'DROP TYPE "' || t.type_name || '" FORCE';
+    END LOOP;
+END;
+/
+
 CREATE OR REPLACE TYPE tp_endereco AS OBJECT (
     Logradouro VARCHAR2(50),
     Numero NUMBER,
@@ -13,7 +21,7 @@ CREATE OR REPLACE TYPE BODY tp_endereco AS
         SELF.Logradouro := Logradouro;
         SELF.Numero := Numero;
         SELF.CEP := CEP;
-        RETURN SELF;
+        RETURN;
     END;
 END;
 /
@@ -38,7 +46,7 @@ CREATE OR REPLACE TYPE BODY tp_pessoa AS
         SELF.DataNascimento := DataNascimento;
         SELF.CPF := CPF;
         SELF.Nome := Nome;
-        RETURN SELF;
+        RETURN;
     END;
 END;
 /
@@ -58,7 +66,7 @@ CREATE OR REPLACE TYPE BODY tp_leitor AS
         SELF.Email := Email;
         SELF.TipoLeitor := TipoLeitor;
         SELF.Senha := Senha;
-        RETURN SELF;
+        RETURN;
     END;
 END;
 /
@@ -80,7 +88,10 @@ CREATE OR REPLACE TYPE BODY tp_funcionario AS
         SELF.CodigoFuncionario := CodigoFuncionario;
         SELF.Cargo := Cargo;
         SELF.Senha := Senha;
-        RETURN SELF;
+        RETURN;
     END;
 END;
 /
+
+ALTER TYPE tp_funcionario
+ADD ATTRIBUTE (supervisor REF tp_funcionario) CASCADE;
