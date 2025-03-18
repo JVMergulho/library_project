@@ -49,38 +49,44 @@ CREATE TABLE Permissao OF PermissaoType (
     CONSTRAINT permissao_chk_restricao CHECK (RestricaoUsuario IN ('L', 'A', 'R'))
 );
 
--- Tipo e tabela do Autor
+-- Criando um tipo de objeto para autores
 CREATE TYPE AutorType AS OBJECT (
     ID INTEGER,
     Nome VARCHAR2(50)
 );
-/
 
-CREATE TABLE Autor OF AutorType (
-    CONSTRAINT autor_pk PRIMARY KEY (ID)
+-- Criando um tipo de coleção para armazenar múltiplos autores
+CREATE TYPE Autor_nt AS TABLE OF AutorType;
+
+-- Criando um tipo de objeto para gêneros
+CREATE TYPE GeneroType AS OBJECT (
+    ID INTEGER,
+    Nome VARCHAR2(50)
 );
 
--- Tipo e tabela LivroAutor
-CREATE TYPE LivroAutorType AS OBJECT (
+-- Criando um tipo de coleção para armazenar múltiplos gêneros
+CREATE TYPE Genero_nt AS TABLE OF GeneroType;
+
+-- Criando o tipo do Livro, agora incluindo nested tables para autores e gêneros
+CREATE TYPE LivroInfoType AS OBJECT (
     ISBN VARCHAR2(13),
-    AutorID INTEGER
+    Titulo VARCHAR2(100),
+    Editora VARCHAR2(50),
+    AnoPublicacao INTEGER,
+    Secao REF SecaoType,
+    RestricaoUsuario CHAR(1),
+    Autores Autor_nt, 
+    Generos Genero_nt
 );
 
-CREATE TABLE LivroAutor OF LivroAutorType (
-    CONSTRAINT livroautor_pk PRIMARY KEY (ISBN, AutorID),
-    CONSTRAINT livroautor_fk_livro FOREIGN KEY (ISBN) REFERENCES LivroInfo(ISBN) ON DELETE CASCADE,
-    CONSTRAINT livroautor_fk_autor FOREIGN KEY (AutorID) REFERENCES Autor(ID) ON DELETE CASCADE
-);
+-- Criando a tabela do Livro
+CREATE TABLE LivroInfo OF LivroInfoType (
+    CONSTRAINT livroinfo_pk PRIMARY KEY (ISBN),
+    CONSTRAINT livroinfo_chk_restricao CHECK (RestricaoUsuario IN ('L', 'A', 'R')),
+    Secao WITH ROWID REFERENCES SecaoType
+)
+NESTED TABLE Autores STORE AS Autores_Table,
+NESTED TABLE Generos STORE AS Generos_Table;
 
--- Tipo e tabela LivroGenero
-CREATE TYPE LivroGeneroType AS OBJECT (
-    ISBN VARCHAR2(13),
-    Genero VARCHAR2(50)
-);
-
-CREATE TABLE LivroGenero OF LivroGeneroType (
-    CONSTRAINT livrogenero_pk PRIMARY KEY (ISBN, Genero),
-    CONSTRAINT livrogenero_fk_livro FOREIGN KEY (ISBN) REFERENCES LivroInfo(ISBN) ON DELETE CASCADE
-);
 
 COMMIT;
