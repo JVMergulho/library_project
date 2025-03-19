@@ -1,7 +1,13 @@
+DROP TABLE Emprestimo CASCADE CONSTRAINTS;
+DROP TABLE Reserva CASCADE CONSTRAINTS;
+DROP TABLE Multa CASCADE CONSTRAINTS;
+
+-- CRIAÇÃO DE TABELAS PARA CADASTRO DE AÇÕES/ RELACIONAMENTOS ENTRE PESSOAS E LIVROS
+
 CREATE TYPE EmprestimoType AS OBJECT (
-    Leitor VARCHAR2(14),
-    Funcionario VARCHAR2(14),
-    Livro INTEGER,
+    Leitor REF LeitorType,
+    Funcionario REF FuncionarioType,
+    Livro REF LivroType,
     DataEmprestimo DATE,
     DataDevolucao DATE,
     Estado CHAR(1),
@@ -11,8 +17,9 @@ CREATE TYPE EmprestimoType AS OBJECT (
 
 CREATE OR REPLACE TYPE BODY EmprestimoType AS
     MAP MEMBER FUNCTION getLeitor RETURN VARCHAR2 IS
-        l INTEGER := Leitor;
+        l VARCHAR2(100);
     BEGIN
+        SELECT DEREF(Leitor).Nome INTO l FROM DUAL;
         RETURN l;
     END;
 
@@ -38,16 +45,16 @@ END;
 
 CREATE TABLE Emprestimo OF EmprestimoType (
     CONSTRAINT emprestimo_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataEmprestimo),
-    CONSTRAINT emprestimo_fk_leitor FOREIGN KEY (Leitor) REFERENCES Leitor(CPF),
-    CONSTRAINT emprestimo_fk_funcionario FOREIGN KEY (Funcionario) REFERENCES Funcionario(CPF),
-    CONSTRAINT emprestimo_fk_livro FOREIGN KEY (Livro) REFERENCES Livro(CodigoTombamento),
-    CONSTRAINT emprestimo_chk_estado CHECK (Estado IN ('E', 'D', 'A'))
+    CONSTRAINT emprestimo_chk_estado CHECK (Estado IN ('E', 'D', 'A')),
+    Livro WITH ROWID REFERENCES LivroType,
+    Funcionario WITH ROWID REFERENCES FuncionarioType,
+    Leitor WITH ROWID REFERENCES LeitorType
 );
 
 CREATE TYPE Reserva AS OBJECT (
-    Leitor VARCHAR2(14),
-    Funcionario VARCHAR2(14),
-    Livro INTEGER,
+    Leitor REF LeitorType,
+    Funcionario REF FuncionarioType,
+    Livro REF LivroType,
     DataReserva DATE,
     DataLimite DATE,
     Estado CHAR(1)
@@ -55,18 +62,15 @@ CREATE TYPE Reserva AS OBJECT (
 
 CREATE TABLE Reserva OF Reserva (
     CONSTRAINT reserva_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataReserva),
-    CONSTRAINT reserva_fk_leitor FOREIGN KEY (Leitor) REFERENCES Leitor(CPF),
-    CONSTRAINT reserva_fk_funcionario FOREIGN KEY (Funcionario) REFERENCES Funcionario(CPF),
-    CONSTRAINT reserva_fk_livro FOREIGN KEY (Livro) REFERENCES Livro(CodigoTombamento),
-    CONSTRAINT reserva_chk_estado CHECK (Estado IN ('R', 'F', 'C'))
+    CONSTRAINT reserva_chk_estado CHECK (Estado IN ('R', 'F', 'C')),
+    Livro WITH ROWID REFERENCES LivroType,
+    Funcionario WITH ROWID REFERENCES FuncionarioType,
+    Leitor WITH ROWID REFERENCES LeitorType
 );
 
 CREATE TYPE MultaType AS OBJECT (
-    Leitor VARCHAR2(14),
-    Funcionario VARCHAR2(14),
-    Livro INTEGER,
+    Emprestimo REF EmprestimoType,
     DataMulta DATE,
-    DataEmprestimo DATE,
     Status CHAR(1),
     TaxaDiaria NUMBER(10,2),
     ValorMaximo NUMBER(10,2),
@@ -89,6 +93,6 @@ END;
 
 CREATE TABLE Multa OF MultaType (
     CONSTRAINT multa_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataMulta, DataEmprestimo),
-    CONSTRAINT multa_fk_leitor FOREIGN KEY (Leitor, Livro, Funcionario, DataEmprestimo) REFERENCES Emprestimo(Leitor, Livro, Funcionario, DataEmprestimo),
-    CONSTRAINT multa_chk_status CHECK (Status IN ('A', 'P'))
+    CONSTRAINT multa_chk_status CHECK (Status IN ('A', 'P')),
+    Emprestimo WITH ROWID REFERENCES EmprestimoType
 );
