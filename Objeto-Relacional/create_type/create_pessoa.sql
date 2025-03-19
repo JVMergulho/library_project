@@ -12,7 +12,7 @@ CREATE OR REPLACE TYPE EnderecoType AS OBJECT (
     CEP NUMBER,
 
     CONSTRUCTOR FUNCTION EnderecoType(SELF IN OUT EnderecoType, Logradouro VARCHAR2, Numero NUMBER, CEP NUMBER) RETURN SELF AS RESULT
-);
+) NOT INSTANTIABLE;
 /
 
 CREATE OR REPLACE TYPE BODY EnderecoType AS
@@ -51,6 +51,10 @@ CREATE OR REPLACE TYPE BODY PessoaType AS
 END;
 /
 
+CREATE TABLE Pessoa OF PessoaType (
+    CONSTRAINT pessoa_pk PRIMARY KEY (CodigoTombamento)
+);
+
 CREATE OR REPLACE TYPE LeitorType UNDER PessoaType (
     Email VARCHAR2(320),
     TipoLeitor CHAR(20),
@@ -71,6 +75,10 @@ CREATE OR REPLACE TYPE BODY LeitorType AS
 END;
 /
 
+CREATE TABLE Leitor OF LeitorType (
+    CONSTRAINT leitor_pk PRIMARY KEY (CPF)
+);
+
 CREATE OR REPLACE TYPE SecaoType AS OBJECT (
     CodigoSecao INTEGER,
     Nome VARCHAR2(50),
@@ -88,6 +96,10 @@ CREATE OR REPLACE TYPE BODY SecaoType AS
     END;
 END;
 /
+
+CREATE TABLE Secao OF SecaoType (
+    CONSTRAINT leitor_pk PRIMARY KEY (CPF)
+);
 
 CREATE OR REPLACE TYPE FuncionarioType UNDER FuncionarioPessoa (
     Email VARCHAR2(320),
@@ -111,6 +123,10 @@ CREATE OR REPLACE TYPE BODY FuncionarioType AS
     END;
 END;
 /
+
+CREATE TABLE Funcionario OF FuncionarioType (
+    CONSTRAINT funcionario_pk PRIMARY KEY (CPF)
+);
 
 ALTER TYPE FuncionarioType
 ADD ATTRIBUTE (supervisor REF FuncionarioType) CASCADE;
