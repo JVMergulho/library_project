@@ -47,7 +47,9 @@ CREATE OR REPLACE TYPE PessoaType AS OBJECT (
     CPF NUMBER,
     Nome VARCHAR2(50),
 
-    CONSTRUCTOR FUNCTION PessoaType(SELF IN OUT PessoaType, Telefones TelefonesType, DataNascimento NUMBER, CPF NUMBER, Nome VARCHAR2) RETURN SELF AS RESULT
+    CONSTRUCTOR FUNCTION PessoaType(SELF IN OUT PessoaType, Telefones TelefonesType, DataNascimento NUMBER, CPF NUMBER, Nome VARCHAR2) RETURN SELF AS RESULT,
+
+    MEMBER FUNCTION desconto RETURN NUMBER
 ) NOT FINAL;
 /
 
@@ -59,6 +61,18 @@ CREATE OR REPLACE TYPE BODY PessoaType AS
         SELF.CPF := CPF;
         SELF.Nome := Nome;
         RETURN;
+    END;
+
+    MEMBER FUNCTION desconto RETURN NUMBER IS
+        dias NUMBER := SYSDATE - DataNascimento;
+    BEGIN
+        IF dias > 30 AND dias < 365 THEN
+            RETURN 0.1;
+        ELSIF dias > 365 THEN
+            RETURN 0.2;
+        END IF;
+
+        RETURN 0;
     END;
 END;
 /
@@ -72,7 +86,9 @@ CREATE OR REPLACE TYPE LeitorType UNDER PessoaType (
     TipoLeitor CHAR(20),
     Senha VARCHAR2(30),
 
-    CONSTRUCTOR FUNCTION LeitorType(SELF IN OUT LeitorType, Email VARCHAR2, TipoLeitor CHAR, Senha VARCHAR2) RETURN SELF AS RESULT
+    CONSTRUCTOR FUNCTION LeitorType(SELF IN OUT LeitorType, Email VARCHAR2, TipoLeitor CHAR, Senha VARCHAR2) RETURN SELF AS RESULT,
+
+    OVERRIDING MEMBER FUNCTION desconto RETURN NUMBER
 );
 /
 
@@ -83,6 +99,11 @@ CREATE OR REPLACE TYPE BODY LeitorType AS
         SELF.TipoLeitor := TipoLeitor;
         SELF.Senha := Senha;
         RETURN;
+    END;
+
+    OVERRIDING MEMBER FUNCTION desconto RETURN NUMBER IS
+    BEGIN
+        RETURN 0.3;
     END;
 END;
 /
