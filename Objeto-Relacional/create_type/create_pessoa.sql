@@ -78,7 +78,7 @@ END;
 /
 
 CREATE TABLE Pessoa OF PessoaType (
-    CONSTRAINT pessoa_pk PRIMARY KEY (CodigoTombamento)
+    CONSTRAINT pessoa_pk PRIMARY KEY (CPF)
 );
 
 CREATE OR REPLACE TYPE LeitorType UNDER PessoaType (
@@ -131,10 +131,10 @@ END;
 /
 
 CREATE TABLE Secao OF SecaoType (
-    CONSTRAINT leitor_pk PRIMARY KEY (CPF)
+    CONSTRAINT secao_pk PRIMARY KEY (CodigoSecao)
 );
 
-CREATE OR REPLACE TYPE FuncionarioType UNDER FuncionarioPessoa (
+CREATE OR REPLACE TYPE FuncionarioType UNDER PessoaType (
     Email VARCHAR2(320),
     CodigoFuncionario INTEGER,
     Cargo VARCHAR2(50),
