@@ -3,19 +3,7 @@ DROP TABLE Livro CASCADE CONSTRAINTS;
 DROP TABLE LivroInfo CASCADE CONSTRAINTS;
 DROP TABLE Permissao CASCADE CONSTRAINTS;
 
-DROP SEQUENCE seq_id_livro;
-DROP SEQUENCE seq_id_autor;
-
 -- CRIAÇÃO DE TABELAS PARA CADASTRO DE LIVROS
-
--- sequência para gerar identificadores únicos
-CREATE SEQUENCE seq_id_livro
-    START WITH 1
-    INCREMENT BY 1;
-
-CREATE SEQUENCE seq_id_autor
-    START WITH 1
-    INCREMENT BY 1;
 
 -- Tipo e tabela do livro
 CREATE TYPE LivroType AS OBJECT (
