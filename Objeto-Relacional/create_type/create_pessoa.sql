@@ -95,3 +95,21 @@ END;
 
 ALTER TYPE tp_funcionario
 ADD ATTRIBUTE (supervisor REF tp_funcionario) CASCADE;
+
+CREATE OR REPLACE TYPE tp_secao AS OBJECT (
+    CodigoSecao INTEGER,
+    Nome VARCHAR2(50),
+
+    CONSTRUCTOR FUNCTION tp_secao(SELF IN OUT tp_secao, CodigoSecao INTEGER, Nome VARCHAR2) RETURN SELF AS RESULT
+);
+/
+
+CREATE OR REPLACE TYPE BODY tp_secao AS
+    CONSTRUCTOR FUNCTION tp_secao(SELF IN OUT tp_secao, CodigoSecao INTEGER, Nome VARCHAR2) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.CodigoSecao := CodigoSecao;
+        SELF.Nome := Nome;
+        RETURN;
+    END;
+END;
+/
