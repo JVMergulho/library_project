@@ -21,8 +21,9 @@ CREATE SEQUENCE seq_id_autor
 CREATE TYPE LivroType AS OBJECT (
     CodigoTombamento INTEGER,
     Preco DECIMAL(10, 2),
-    Funcionario REF Funcionario,
-    LivroInfo REF LivroInfoType
+    Funcionario REF FuncionarioType,
+    LivroInfo REF LivroInfoType,
+    Secao REF SecaoType
 );
 
 CREATE TABLE Livro OF LivroType (

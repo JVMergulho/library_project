@@ -18,17 +18,17 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE TYPE tp_endereco AS OBJECT (
+CREATE OR REPLACE TYPE EnderecoType AS OBJECT (
     Logradouro VARCHAR2(50),
     Numero NUMBER,
     CEP NUMBER,
 
-    CONSTRUCTOR FUNCTION tp_endereco(SELF IN OUT tp_endereco, Logradouro VARCHAR2, Numero NUMBER, CEP NUMBER) RETURN SELF AS RESULT
-);
+    CONSTRUCTOR FUNCTION EnderecoType(SELF IN OUT EnderecoType, Logradouro VARCHAR2, Numero NUMBER, CEP NUMBER) RETURN SELF AS RESULT
+) NOT INSTANTIABLE;
 /
 
-CREATE OR REPLACE TYPE BODY tp_endereco AS
-    CONSTRUCTOR FUNCTION tp_endereco(SELF IN OUT tp_endereco, Logradouro VARCHAR2, Numero NUMBER, CEP NUMBER) RETURN SELF AS RESULT IS
+CREATE OR REPLACE TYPE BODY EnderecoType AS
+    CONSTRUCTOR FUNCTION EnderecoType(SELF IN OUT EnderecoType, Logradouro VARCHAR2, Numero NUMBER, CEP NUMBER) RETURN SELF AS RESULT IS
     BEGIN
         SELF.Logradouro := Logradouro;
         SELF.Numero := Numero;
@@ -38,21 +38,21 @@ CREATE OR REPLACE TYPE BODY tp_endereco AS
 END;
 /
 
-CREATE TYPE tp_telefones AS VARRAY(5) OF VARCHAR2(20);
+CREATE TYPE TelefonesType AS VARRAY(5) OF VARCHAR2(20);
 /
 
-CREATE OR REPLACE TYPE tp_pessoa AS OBJECT (
-    Telefones tp_telefones,
+CREATE OR REPLACE TYPE PessoaType AS OBJECT (
+    Telefones TelefonesType,
     DataNascimento NUMBER,
     CPF NUMBER,
     Nome VARCHAR2(50),
 
-    CONSTRUCTOR FUNCTION tp_pessoa(SELF IN OUT tp_pessoa, Telefones tp_telefones, DataNascimento NUMBER, CPF NUMBER, Nome VARCHAR2) RETURN SELF AS RESULT
+    CONSTRUCTOR FUNCTION PessoaType(SELF IN OUT PessoaType, Telefones TelefonesType, DataNascimento NUMBER, CPF NUMBER, Nome VARCHAR2) RETURN SELF AS RESULT
 ) NOT FINAL;
 /
 
-CREATE OR REPLACE TYPE BODY tp_pessoa AS
-    CONSTRUCTOR FUNCTION tp_pessoa(SELF IN OUT tp_pessoa, Telefones tp_telefones, DataNascimento NUMBER, CPF NUMBER, Nome VARCHAR2) RETURN SELF AS RESULT IS
+CREATE OR REPLACE TYPE BODY PessoaType AS
+    CONSTRUCTOR FUNCTION PessoaType(SELF IN OUT PessoaType, Telefones TelefonesType, DataNascimento NUMBER, CPF NUMBER, Nome VARCHAR2) RETURN SELF AS RESULT IS
     BEGIN
         SELF.Telefones := Telefones;
         SELF.DataNascimento := DataNascimento;
@@ -63,17 +63,21 @@ CREATE OR REPLACE TYPE BODY tp_pessoa AS
 END;
 /
 
-CREATE OR REPLACE TYPE tp_leitor UNDER tp_pessoa (
+CREATE TABLE Pessoa OF PessoaType (
+    CONSTRAINT pessoa_pk PRIMARY KEY (CodigoTombamento)
+);
+
+CREATE OR REPLACE TYPE LeitorType UNDER PessoaType (
     Email VARCHAR2(320),
     TipoLeitor CHAR(20),
     Senha VARCHAR2(30),
 
-    CONSTRUCTOR FUNCTION tp_leitor(SELF IN OUT tp_leitor, Email VARCHAR2, TipoLeitor CHAR, Senha VARCHAR2) RETURN SELF AS RESULT
+    CONSTRUCTOR FUNCTION LeitorType(SELF IN OUT LeitorType, Email VARCHAR2, TipoLeitor CHAR, Senha VARCHAR2) RETURN SELF AS RESULT
 );
 /
 
-CREATE OR REPLACE TYPE BODY tp_leitor AS
-    CONSTRUCTOR FUNCTION tp_leitor(SELF IN OUT tp_leitor, Email VARCHAR2, TipoLeitor CHAR, Senha VARCHAR2) RETURN SELF AS RESULT IS
+CREATE OR REPLACE TYPE BODY LeitorType AS
+    CONSTRUCTOR FUNCTION LeitorType(SELF IN OUT LeitorType, Email VARCHAR2, TipoLeitor CHAR, Senha VARCHAR2) RETURN SELF AS RESULT IS
     BEGIN
         SELF.Email := Email;
         SELF.TipoLeitor := TipoLeitor;
@@ -83,18 +87,45 @@ CREATE OR REPLACE TYPE BODY tp_leitor AS
 END;
 /
 
-CREATE OR REPLACE TYPE tp_funcionario UNDER tp_pessoa (
+CREATE TABLE Leitor OF LeitorType (
+    CONSTRAINT leitor_pk PRIMARY KEY (CPF)
+);
+
+CREATE OR REPLACE TYPE SecaoType AS OBJECT (
+    CodigoSecao INTEGER,
+    Nome VARCHAR2(50),
+
+    CONSTRUCTOR FUNCTION SecaoType(SELF IN OUT SecaoType, CodigoSecao INTEGER, Nome VARCHAR2) RETURN SELF AS RESULT
+);
+/
+
+CREATE OR REPLACE TYPE BODY SecaoType AS
+    CONSTRUCTOR FUNCTION SecaoType(SELF IN OUT SecaoType, CodigoSecao INTEGER, Nome VARCHAR2) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.CodigoSecao := CodigoSecao;
+        SELF.Nome := Nome;
+        RETURN;
+    END;
+END;
+/
+
+CREATE TABLE Secao OF SecaoType (
+    CONSTRAINT leitor_pk PRIMARY KEY (CPF)
+);
+
+CREATE OR REPLACE TYPE FuncionarioType UNDER FuncionarioPessoa (
     Email VARCHAR2(320),
     CodigoFuncionario INTEGER,
     Cargo VARCHAR2(50),
     Senha VARCHAR2(30),
+    Secao REF SecaoType,
 
-    CONSTRUCTOR FUNCTION tp_funcionario(SELF IN OUT tp_funcionario, Email VARCHAR2, CodigoFuncionario INTEGER, Cargo VARCHAR2, Senha VARCHAR2) RETURN SELF AS RESULT
+    CONSTRUCTOR FUNCTION FuncionarioType(SELF IN OUT FuncionarioType, Email VARCHAR2, CodigoFuncionario INTEGER, Cargo VARCHAR2, Senha VARCHAR2) RETURN SELF AS RESULT
 );
 /
 
-CREATE OR REPLACE TYPE BODY tp_funcionario AS
-    CONSTRUCTOR FUNCTION tp_funcionario(SELF IN OUT tp_funcionario, Email VARCHAR2, CodigoFuncionario INTEGER, Cargo VARCHAR2, Senha VARCHAR2) RETURN SELF AS RESULT IS
+CREATE OR REPLACE TYPE BODY FuncionarioType AS
+    CONSTRUCTOR FUNCTION FuncionarioType(SELF IN OUT FuncionarioType, Email VARCHAR2, CodigoFuncionario INTEGER, Cargo VARCHAR2, Senha VARCHAR2) RETURN SELF AS RESULT IS
     BEGIN
         SELF.Email := Email;
         SELF.CodigoFuncionario := CodigoFuncionario;
@@ -105,5 +136,10 @@ CREATE OR REPLACE TYPE BODY tp_funcionario AS
 END;
 /
 
-ALTER TYPE tp_funcionario
-ADD ATTRIBUTE (supervisor REF tp_funcionario) CASCADE;
+CREATE TABLE Funcionario OF FuncionarioType (
+    CONSTRAINT funcionario_pk PRIMARY KEY (CPF)
+);
+
+ALTER TYPE FuncionarioType
+ADD ATTRIBUTE (supervisor REF FuncionarioType) CASCADE;
+/
