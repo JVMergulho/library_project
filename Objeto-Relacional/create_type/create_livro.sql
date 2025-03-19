@@ -20,20 +20,19 @@ CREATE SEQUENCE seq_id_autor
     INCREMENT BY 1;
 
 -- Tipo e tabela do livro
-CREATE TYPE LivroInfoType AS OBJECT (
-    ISBN VARCHAR2(13),
-    Titulo VARCHAR2(100),
-    Editora VARCHAR2(50),
-    AnoPublicacao INTEGER,
-    SecaoID INTEGER,
-    RestricaoUsuario CHAR(1)
+CREATE TYPE LivroType AS OBJECT (
+    CodigoTombamento INTEGER,
+    Preco DECIMAL(10, 2),
+    Funcionario REF Funcionario,
+    LivroInfo REF LivroInfoType
 );
-/
 
-CREATE TABLE LivroInfo OF LivroInfoType (
-    CONSTRAINT livroinfo_pk PRIMARY KEY (ISBN),
-    CONSTRAINT livroinfo_fk_secao FOREIGN KEY (SecaoID) REFERENCES Secao(ID),
-    CONSTRAINT livroinfo_chk_restricao CHECK (RestricaoUsuario IN ('L', 'A', 'R'))
+CREATE TABLE Livro OF LivroType (
+    CONSTRAINT livroinfo_pk PRIMARY KEY (CodigoTombamento),
+    CONSTRAINT livroinfo_chk_restricao CHECK (RestricaoUsuario IN ('L', 'A', 'R')),
+    LivroInfo WITH ROWID REFERENCES LivroInfoType,
+    Funcionario WITH ROWID REFERENCES Funcionario,
+    Funcionario SCOPE IS Funcionario
 );
 
 -- Tipo e tabela das permissões
@@ -41,7 +40,6 @@ CREATE TYPE PermissaoType AS OBJECT (
     TipoUsuario CHAR(1),
     RestricaoUsuario CHAR(1)
 );
-/
 
 CREATE TABLE Permissao OF PermissaoType (
     CONSTRAINT permissao_pk PRIMARY KEY (TipoUsuario, RestricaoUsuario),
@@ -87,6 +85,5 @@ CREATE TABLE LivroInfo OF LivroInfoType (
 )
 NESTED TABLE Autores STORE AS Autores_Table,
 NESTED TABLE Generos STORE AS Generos_Table;
-
 
 COMMIT;
