@@ -81,11 +81,11 @@ CREATE TYPE MultaType AS OBJECT (
 
 CREATE OR REPLACE TYPE BODY MultaType AS
     ORDER MEMBER FUNCTION comparaMulta(X MultaType) RETURN NUMBER IS
-        d1 NUMBER := DataMulta - DEREF(Emprestimo).DataEmprestimo;
+        d1 NUMBER := SYSDATE - DataMulta;
         t1 NUMBER := TaxaDiaria;
         valor1 NUMBER := d1 * t1;
 
-        d2 NUMBER := X.DataMulta - DEREF(X.Emprestimo).DataEmprestimo;
+        d2 NUMBER := SYSDATE - X.DataMulta;
         t2 NUMBER := X.TaxaDiaria;
         valor2 NUMBER := d2 * t2;
     BEGIN
