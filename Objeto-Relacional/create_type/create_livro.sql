@@ -5,23 +5,6 @@ DROP TABLE Permissao CASCADE CONSTRAINTS;
 
 -- CRIAÇÃO DE TABELAS PARA CADASTRO DE LIVROS
 
--- Tipo e tabela do livro
-CREATE TYPE LivroType AS OBJECT (
-    CodigoTombamento INTEGER,
-    Preco DECIMAL(10, 2),
-    Funcionario REF FuncionarioType,
-    LivroInfo REF LivroInfoType,
-    Secao REF SecaoType
-);
-
-CREATE TABLE Livro OF LivroType (
-    CONSTRAINT livroinfo_pk PRIMARY KEY (CodigoTombamento),
-    CONSTRAINT livroinfo_chk_restricao CHECK (RestricaoUsuario IN ('L', 'A', 'R')),
-    LivroInfo WITH ROWID REFERENCES LivroInfoType,
-    Funcionario WITH ROWID REFERENCES Funcionario,
-    Funcionario SCOPE IS Funcionario
-);
-
 -- Tipo e tabela das permissões
 CREATE TYPE PermissaoType AS OBJECT (
     TipoUsuario CHAR(1),
@@ -68,9 +51,24 @@ CREATE TYPE LivroInfoType AS OBJECT (
 CREATE TABLE LivroInfo OF LivroInfoType (
     CONSTRAINT livroinfo_pk PRIMARY KEY (ISBN),
     CONSTRAINT livroinfo_chk_restricao CHECK (RestricaoUsuario IN ('L', 'A', 'R')),
-    Secao WITH ROWID REFERENCES SecaoType
+    Secao WITH ROWID REFERENCES Secao
 )
 NESTED TABLE Autores STORE AS Autores_Table,
 NESTED TABLE Generos STORE AS Generos_Table;
+
+-- Tipo e tabela do livro
+CREATE TYPE LivroType AS OBJECT (
+    CodigoTombamento INTEGER,
+    Preco DECIMAL(10, 2),
+    Funcionario REF FuncionarioType,
+    LivroInfo REF LivroInfoType,
+    Secao REF SecaoType
+);
+
+CREATE TABLE Livro OF LivroType (
+    CONSTRAINT livro_pk PRIMARY KEY (CodigoTombamento),
+    LivroInfo WITH ROWID REFERENCES LivroInfo,
+    Funcionario SCOPE IS Funcionario
+);
 
 COMMIT;

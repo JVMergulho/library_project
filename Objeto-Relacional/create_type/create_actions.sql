@@ -12,7 +12,7 @@ CREATE TYPE EmprestimoType AS OBJECT (
     DataDevolucao DATE,
     Estado CHAR(1),
     MAP MEMBER FUNCTION getLeitor RETURN VARCHAR2,
-    MEMBER FUNCTION printEstado RETURN CHAR
+    MEMBER PROCEDURE printEstado
 );
 
 CREATE OR REPLACE TYPE BODY EmprestimoType AS
@@ -21,13 +21,15 @@ CREATE OR REPLACE TYPE BODY EmprestimoType AS
     BEGIN
         SELECT DEREF(Leitor).Nome INTO l FROM DUAL;
         RETURN l;
-    END;
+    END getLeitor;
 
-    MEMBER FUNCTION printEstado RETURN CHAR IS
+    MEMBER PROCEDURE printEstado IS
         e CHAR := Estado;
-        l VARCHAR2 := Leitor;
+        l VARCHAR2(100);
         message VARCHAR2(100);
     BEGIN
+        l := DEREF(Leitor).Nome; 
+
         CASE e
             WHEN 'E' THEN
                 message := 'Emprestado/ em andamento';
@@ -36,19 +38,20 @@ CREATE OR REPLACE TYPE BODY EmprestimoType AS
             WHEN 'A' THEN
                 message := 'Estado do empréstimo: Atrasado';
             ELSE
-                message :=  'Estado do empréstimo: Desconhecido';
+                message := 'Estado do empréstimo: Desconhecido';
         END CASE;
 
-        DBMS_OUTPUT.PUT_LINE("Estado do empréstimo do leitor" || l || ": " || e);
-    END;
+        DBMS_OUTPUT.PUT_LINE('Estado do empréstimo do leitor ' || l || ': ' || message);
+
+    END printEstado;
 END;
+/
 
 CREATE TABLE Emprestimo OF EmprestimoType (
-    CONSTRAINT emprestimo_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataEmprestimo),
     CONSTRAINT emprestimo_chk_estado CHECK (Estado IN ('E', 'D', 'A')),
-    Livro WITH ROWID REFERENCES LivroType,
-    Funcionario WITH ROWID REFERENCES FuncionarioType,
-    Leitor WITH ROWID REFERENCES LeitorType
+    Livro WITH ROWID REFERENCES Livro,
+    Funcionario WITH ROWID REFERENCES Funcionario,
+    Leitor WITH ROWID REFERENCES Leitor
 );
 
 CREATE TYPE Reserva AS OBJECT (
@@ -61,11 +64,10 @@ CREATE TYPE Reserva AS OBJECT (
 );
 
 CREATE TABLE Reserva OF Reserva (
-    CONSTRAINT reserva_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataReserva),
     CONSTRAINT reserva_chk_estado CHECK (Estado IN ('R', 'F', 'C')),
-    Livro WITH ROWID REFERENCES LivroType,
-    Funcionario WITH ROWID REFERENCES FuncionarioType,
-    Leitor WITH ROWID REFERENCES LeitorType
+    Livro WITH ROWID REFERENCES Livro,
+    Funcionario WITH ROWID REFERENCES Funcionario,
+    Leitor WITH ROWID REFERENCES Leitor
 );
 
 CREATE TYPE MultaType AS OBJECT (
@@ -79,11 +81,11 @@ CREATE TYPE MultaType AS OBJECT (
 
 CREATE OR REPLACE TYPE BODY MultaType AS
     ORDER MEMBER FUNCTION comparaMulta(X MultaType) RETURN NUMBER IS
-        d1 NUMBER := DataMulta - DataEmprestimo;
+        d1 NUMBER := DataMulta - DEREF(Emprestimo).DataEmprestimo;
         t1 NUMBER := TaxaDiaria;
         valor1 NUMBER := d1 * t1;
 
-        d2 NUMBER := X.DataMulta - X.DataEmprestimo;
+        d2 NUMBER := X.DataMulta - DEREF(X.Emprestimo).DataEmprestimo;
         t2 NUMBER := X.TaxaDiaria;
         valor2 NUMBER := d2 * t2;
     BEGIN
@@ -92,7 +94,6 @@ CREATE OR REPLACE TYPE BODY MultaType AS
 END;
 
 CREATE TABLE Multa OF MultaType (
-    CONSTRAINT multa_pk PRIMARY KEY (Leitor, Livro, Funcionario, DataMulta, DataEmprestimo),
     CONSTRAINT multa_chk_status CHECK (Status IN ('A', 'P')),
-    Emprestimo WITH ROWID REFERENCES EmprestimoType
+    Emprestimo WITH ROWID REFERENCES Emprestimo
 );
