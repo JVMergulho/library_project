@@ -14,12 +14,13 @@ CREATE TYPE EmprestimoType AS OBJECT (
     MAP MEMBER FUNCTION getLeitor RETURN VARCHAR2,
     MEMBER PROCEDURE printEstado
 );
+/
 
 CREATE OR REPLACE TYPE BODY EmprestimoType AS
     MAP MEMBER FUNCTION getLeitor RETURN VARCHAR2 IS
         l VARCHAR2(100);
     BEGIN
-        SELECT DEREF(Leitor).Nome INTO l FROM DUAL;
+        SELECT DEREF(Self.Leitor).Nome INTO l FROM DUAL;
         RETURN l;
     END getLeitor;
 
@@ -28,7 +29,7 @@ CREATE OR REPLACE TYPE BODY EmprestimoType AS
         l VARCHAR2(100);
         message VARCHAR2(100);
     BEGIN
-        l := DEREF(Leitor).Nome; 
+        l := DEREF(Self.Leitor).Nome; 
 
         CASE e
             WHEN 'E' THEN
@@ -54,7 +55,7 @@ CREATE TABLE Emprestimo OF EmprestimoType (
     Leitor WITH ROWID REFERENCES Leitor
 );
 
-CREATE TYPE Reserva AS OBJECT (
+CREATE TYPE ReservaType AS OBJECT (
     Leitor REF LeitorType,
     Funcionario REF FuncionarioType,
     Livro REF LivroType,
@@ -62,8 +63,9 @@ CREATE TYPE Reserva AS OBJECT (
     DataLimite DATE,
     Estado CHAR(1)
 );
+/
 
-CREATE TABLE Reserva OF Reserva (
+CREATE TABLE Reserva OF ReservaType (
     CONSTRAINT reserva_chk_estado CHECK (Estado IN ('R', 'F', 'C')),
     Livro WITH ROWID REFERENCES Livro,
     Funcionario WITH ROWID REFERENCES Funcionario,
@@ -78,6 +80,7 @@ CREATE TYPE MultaType AS OBJECT (
     ValorMaximo NUMBER(10,2),
     ORDER MEMBER FUNCTION comparaMulta(X MultaType) RETURN NUMBER
 );
+/
 
 CREATE OR REPLACE TYPE BODY MultaType AS
     ORDER MEMBER FUNCTION comparaMulta(X MultaType) RETURN NUMBER IS
@@ -92,6 +95,7 @@ CREATE OR REPLACE TYPE BODY MultaType AS
         RETURN valor1 - valor2;
     END;
 END;
+/
 
 CREATE TABLE Multa OF MultaType (
     CONSTRAINT multa_chk_status CHECK (Status IN ('A', 'P')),

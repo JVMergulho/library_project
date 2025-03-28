@@ -2,14 +2,23 @@ DROP TABLE Autor CASCADE CONSTRAINTS;
 DROP TABLE Livro CASCADE CONSTRAINTS;
 DROP TABLE LivroInfo CASCADE CONSTRAINTS;
 DROP TABLE Permissao CASCADE CONSTRAINTS;
+DROP TABLE Autores_Table CASCADE CONSTRAINTS;
+DROP TABLE Generos_Table CASCADE CONSTRAINTS;
 
--- CRIAÇÃO DE TABELAS PARA CADASTRO DE LIVROS
+BEGIN
+    FOR t IN (SELECT type_name FROM user_types) LOOP
+        EXECUTE IMMEDIATE 'DROP TYPE BODY "' || t.type_name || '"';
+        EXECUTE IMMEDIATE 'DROP TYPE "' || t.type_name || '" FORCE';
+    END LOOP;
+END;
+/
 
--- Tipo e tabela das permissões
+
 CREATE TYPE PermissaoType AS OBJECT (
     TipoUsuario CHAR(1),
     RestricaoUsuario CHAR(1)
 );
+/
 
 CREATE TABLE Permissao OF PermissaoType (
     CONSTRAINT permissao_pk PRIMARY KEY (TipoUsuario, RestricaoUsuario),
@@ -22,18 +31,22 @@ CREATE TYPE AutorType AS OBJECT (
     ID INTEGER,
     Nome VARCHAR2(50)
 );
+/
 
 -- Criando um tipo de coleção para armazenar múltiplos autores
 CREATE TYPE Autor_nt AS TABLE OF AutorType;
+/
 
 -- Criando um tipo de objeto para gêneros
 CREATE TYPE GeneroType AS OBJECT (
     ID INTEGER,
     Nome VARCHAR2(50)
 );
+/
 
 -- Criando um tipo de coleção para armazenar múltiplos gêneros
 CREATE TYPE Genero_nt AS TABLE OF GeneroType;
+/
 
 -- Criando o tipo do Livro, agora incluindo nested tables para autores e gêneros
 CREATE TYPE LivroInfoType AS OBJECT (
@@ -46,6 +59,7 @@ CREATE TYPE LivroInfoType AS OBJECT (
     Autores Autor_nt, 
     Generos Genero_nt
 );
+/
 
 -- Criando a tabela do Livro
 CREATE TABLE LivroInfo OF LivroInfoType (
@@ -64,6 +78,7 @@ CREATE TYPE LivroType AS OBJECT (
     LivroInfo REF LivroInfoType,
     Secao REF SecaoType
 );
+/
 
 CREATE TABLE Livro OF LivroType (
     CONSTRAINT livro_pk PRIMARY KEY (CodigoTombamento),
