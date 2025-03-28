@@ -1,4 +1,3 @@
-
 -- CONSULTAS COM NESTED TABLE
 
 -- Listar todos os livros com seus autores
@@ -15,38 +14,63 @@ FROM LivroInfo L, TABLE(L.Autores) A
 GROUP BY A.ID, A.Nome
 ORDER BY QuantidadeLivros DESC;
 
--- CONSULTAS COM VARRAY
-
--- Listar os telefones de todas as pessoas que fizeram empréstimos no mês de janeiro
-SELECT 
-    E.DataEmprestimo, 
-    E.DataDevolucao, 
-    T.COLUMN_VALUE AS Telefone
-FROM 
-    Emprestimo E,
-    DEREF(E.Leitor) L,
-    TABLE(L.Telefones) T
-WHERE 
-    EXTRACT(MONTH FROM E.DataEmprestimo) = 1;
-
--- CONSULTAS COM REF E DEREF
-
 -- Listar todos os livros registrados pela funcionária Leticia Pedrosa
 SELECT DEREF(L.LivroInfo).ISBN, DEREF(L.LivroInfo).Titulo
 FROM Livro L
 WHERE L.Funcionario = (SELECT REF(F) FROM Funcionario F WHERE F.Nome = 'Leticia Pedrosa');
 
--- Listar todos os livros atrasados
-SELECT E.getLeitor(), E.DataEmprestimo, E.DataDevolucao, DEREF(E.Livro).Titulo
+CREATE OR REPLACE FUNCTION varray_to_string(phones TelefonesType)
+RETURN VARCHAR2
+IS
+    v_result VARCHAR2(1000);
+BEGIN
+    IF phones IS NULL OR phones.count = 0 THEN
+        RETURN NULL;
+    END IF;
+
+    FOR i IN 1 .. phones.count LOOP
+        IF i > 1 THEN
+            v_result := v_result || ', ';
+        END IF;
+        v_result := v_result || phones(i);
+    END LOOP;
+
+    RETURN v_result;
+END;
+/
+
+-- Para todos os emprestimos feitos em um mês retornar a data de emprestimo, de devolução e telefones
+SELECT 
+    E.DataEmprestimo, 
+    E.DataDevolucao, 
+    varray_to_string(DEREF(E.Leitor).Telefones) AS Telefones
 FROM Emprestimo E
-WHERE E.Estado = 'A'
-ORDER BY E.getLeitor();
+WHERE EXTRACT(MONTH FROM E.DataEmprestimo) = 1;
 
--- Seção onde está o livro "O Pequeno Príncipe"
-SELECT DEREF(L.secao).Nome
-FROM LivroInfo L
-WHERE L.NOME = 'O Pequeno Príncipe';
+-- Mostra um telefone para cada pessoa que tem um telefone cadastrado
+SELECT 
+    P.Nome,
+    T.COLUMN_VALUE AS Telefone
+FROM 
+    Pessoa P,
+    TABLE(P.Telefones) T;
 
---  Listar todos os empréstimos com informações dos livros e membros
-SELECT E.ID, DEREF(E.LivroInfo).Titulo, DEREF(E.Membro).Nome, E.DataEmprestimo, E.DataDevolucao
-FROM Emprestimo E;
+-- Lista teletones de pessoas que fizeram emprestimo em outubro
+SELECT 
+    E.DataEmprestimo, 
+    E.DataDevolucao, 
+    varray_to_string(DEREF(E.Leitor).Telefones) AS Telefones
+FROM 
+    Emprestimo E
+WHERE 
+    EXTRACT(MONTH FROM E.DataEmprestimo) = 10;
+
+-- Listar livros com mais de um autor
+SELECT 
+    LI.ISBN,
+    LI.Titulo,
+    CARDINALITY(LI.Autores) AS NumeroDeAutores
+FROM 
+    LivroInfo LI
+WHERE 
+    CARDINALITY(LI.Autores) > 1;
