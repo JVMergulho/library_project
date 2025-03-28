@@ -82,7 +82,7 @@ COMMIT;
 
 INSERT INTO Reserva
 VALUES (
-    Reserva(
+    ReservaType(
         (SELECT REF(l) FROM Leitor l 
           WHERE l.CPF = 15468718901),
         (SELECT REF(f) FROM Funcionario f
@@ -97,7 +97,7 @@ VALUES (
 
 INSERT INTO Reserva
 VALUES (
-    Reserva(
+    ReservaType(
         (SELECT REF(l) FROM Leitor l 
           WHERE l.CPF = 56234565444),
         (SELECT REF(f) FROM Funcionario f
