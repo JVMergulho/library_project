@@ -19,18 +19,15 @@ ORDER BY QuantidadeLivros DESC;
 
 -- Listar os telefones de todas as pessoas que fizeram empréstimos no mês de janeiro
 SELECT 
-    E.ID, 
     E.DataEmprestimo, 
     E.DataDevolucao, 
     T.COLUMN_VALUE AS Telefone
 FROM 
-    Emprestimo E
-JOIN 
-    DEREF(E.Leitor) L ON L.CPF = DEREF(E.Leitor).CPF  -- A associação correta utilizando DEREF
-JOIN 
+    Emprestimo E,
+    DEREF(E.Leitor) L,
     TABLE(L.Telefones) T
 WHERE 
-    TO_CHAR(E.DataEmprestimo, 'MM') = '01';
+    EXTRACT(MONTH FROM E.DataEmprestimo) = 1;
 
 -- CONSULTAS COM REF E DEREF
 
