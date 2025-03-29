@@ -74,3 +74,44 @@ FROM
     LivroInfo LI
 WHERE 
     CARDINALITY(LI.Autores) > 1;
+
+-- Listar todos os livros por seção
+SELECT 
+    DEREF(li.Secao).Nome AS Secao,
+    COUNT(*) AS TotalLivros
+FROM LivroInfo li
+GROUP BY DEREF(li.Secao).Nome;
+
+-- Listar todas as pessoas com o valor de desconto calculado
+SELECT 
+    p.CPF,
+    p.Nome,
+    p.desconto() AS Desconto
+FROM Pessoa p;
+-- Listar funcionarios que registram mais de um livro
+SELECT 
+    DEREF(l.Funcionario).Nome AS Funcionario,
+    COUNT(*) AS TotalLivros
+FROM Livro l
+GROUP BY DEREF(l.Funcionario).Nome
+HAVING COUNT(*) > 1;
+--Listar cada telefone cadastrado para cada pessoa
+SELECT 
+    p.Nome,
+    t.COLUMN_VALUE AS Telefone
+FROM Pessoa p,
+     TABLE(p.Telefones) t;
+-- Listar todos os empréstimos com nome do leitor e telefones
+SELECT 
+    E.DataEmprestimo, 
+    E.DataDevolucao, 
+    DEREF(E.Leitor).Nome AS NomeLeitor,
+    varray_to_string(DEREF(E.Leitor).Telefones) AS Telefones
+FROM Emprestimo E;
+-- Listar funcionários sem supervisor definido
+SELECT 
+    f.CPF,
+    f.Nome,
+    f.CodigoFuncionario
+FROM Funcionario f
+WHERE f.supervisor IS NULL;
